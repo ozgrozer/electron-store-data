@@ -4,20 +4,36 @@
 
 A Node.js module to store [Electron](https://github.com/electron/electron) datas in the computer.
 
+## Installation
+```sh
+# with npm
+$ npm i electron-store-data
+
+# or with yarn
+$ yarn add electron-store-data
+```
+
 ## Usage
 ```js
+// include module
 const Store = require('electron-store-data')
 
-// File created on file:///Users/{user-name}/Library/Application Support/{electron-app-name}/window.json (macOS).
-const storeWindow = new Store('window')
+// initialize
+const storeWindow = new Store({
+  filename: 'window',
+  defaults: {
+    bounds: { x: '', y: '', width: 900, height: 500 }
+  }
+})
 
-storeWindow.set('width', '640')
-console.log(storeWindow.get('width')) // 640
-storeWindow.delete('width')
+// get
+console.log(storeWindow.get('bounds')) // { x: '', y: '', width: 900, height: 500 }
 
-storeWindow.set('options', { 'width': '640', 'height': '480' })
-console.log(storeWindow.get('options')) // { width: '640', height: '480' }
-storeWindow.delete('options')
+// set
+storeWindow.set('bounds', { x: 500, y: 200, width: 800, height: 450 })
+
+// delete
+storeWindow.delete('bounds')
 ```
 
 ## Contribution

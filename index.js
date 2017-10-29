@@ -3,24 +3,16 @@ const path = require('path')
 const fs = require('fs')
 
 class Store {
-  constructor (filename) {
-    this.path = path.join((electron.app || electron.remote.app).getPath('userData'), filename + '.json')
-    this.data = this.readFile()
-
-    this.createFile()
+  constructor (opts) {
+    this.path = path.join((electron.app || electron.remote.app).getPath('userData'), opts.filename + '.json')
+    this.data = this.readFile(opts.defaults) || {}
   }
 
-  readFile () {
+  readFile (defaults) {
     try {
       return JSON.parse(fs.readFileSync(this.path, 'utf8'))
     } catch (e) {
-      return {}
-    }
-  }
-
-  createFile () {
-    if (!fs.existsSync(this.path)) {
-      return this.writeFile()
+      return defaults
     }
   }
 
