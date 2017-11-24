@@ -1,23 +1,34 @@
 const electron = require('electron')
-const path = require('path')
 const fs = require('fs')
+const mkdirp = require('mkdirp')
 
 class Store {
   constructor (opts) {
-    this.path = path.join((electron.app || electron.remote.app).getPath('userData'), opts.filename + '.json')
+    this.rootFolder = (electron.app || electron.remote.app).getPath('userData') + '/'
+    this.path = opts.path.replace(/\./g, '/')
+    this.fullPath = this.rootFolder + this.path + '.json'
     this.data = this.readFile(opts.defaults) || {}
   }
 
   readFile (defaults) {
     try {
-      return JSON.parse(fs.readFileSync(this.path, 'utf8'))
+      return JSON.parse(fs.readFileSync(this.fullPath, 'utf8'))
     } catch (e) {
       return defaults
     }
   }
 
   writeFile () {
-    return fs.writeFileSync(this.path, JSON.stringify(this.data))
+    const split = this.path.split('/')
+    const splitLength = split.length
+    let folder = this.rootFolder
+    if (splitLength > 1) {
+      for (let i = 0; i < (splitLength - 1); i++) {
+        folder += split[i] + '/'
+        mkdirp.sync(folder)
+      }
+    }
+    return fs.writeFileSync(this.fullPath, JSON.stringify(this.data))
   }
 
   get (key) {
