@@ -20,7 +20,7 @@ const Store = require('electron-store-data')
 
 // initialize
 const storeWindow = new Store({
-  filename: 'window',
+  path: 'folder-name.file-name',
   defaults: {
     bounds: { x: '', y: '', width: 900, height: 500 }
   }
