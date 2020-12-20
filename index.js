@@ -1,12 +1,12 @@
+const path = require('path')
 const electron = require('electron')
 const fs = require('fs')
 const mkdirp = require('mkdirp')
 
 class Store {
   constructor (opts) {
-    this.rootFolder = (electron.app || electron.remote.app).getPath('userData') + '/'
-    this.path = opts.path.replace(/\./g, '/')
-    this.fullPath = this.rootFolder + this.path + '.json'
+    this.rootFolder = (electron.app || electron.remote.app).getPath('userData')
+    this.fullPath = path.join(this.rootFolder, 'data', `${this.filename}.json`)
     this.data = this.readFile(opts.defaults) || {}
   }
 

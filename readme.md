@@ -20,14 +20,15 @@ const Store = require('electron-store-data')
 
 // initialize
 const storeWindow = new Store({
-  path: 'folder-name.file-name',
+  filename: 'window', // will be window.json
   defaults: {
     bounds: { x: '', y: '', width: 900, height: 500 }
   }
 })
 
 // get
-console.log(storeWindow.get('bounds')) // { x: '', y: '', width: 900, height: 500 }
+console.log(storeWindow.get('bounds'))
+// { x: '', y: '', width: 900, height: 500 }
 
 // set
 storeWindow.set('bounds', { x: 500, y: 200, width: 800, height: 450 })
