@@ -19,15 +19,6 @@ class Store {
   }
 
   writeFile () {
-    const split = this.path.split('/')
-    const splitLength = split.length
-    let folder = this.rootFolder
-    if (splitLength > 1) {
-      for (let i = 0; i < (splitLength - 1); i++) {
-        folder += split[i] + '/'
-        mkdirp.sync(folder)
-      }
-    }
     return fs.writeFileSync(this.fullPath, JSON.stringify(this.data))
   }
 
