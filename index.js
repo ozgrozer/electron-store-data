@@ -1,13 +1,13 @@
 const path = require('path')
 const electron = require('electron')
 const fs = require('fs')
-const mkdirp = require('mkdirp')
 
 class Store {
-  constructor (opts) {
+  constructor (props) {
     this.rootFolder = (electron.app || electron.remote.app).getPath('userData')
-    this.fullPath = path.join(this.rootFolder, 'data', `${this.filename}.json`)
-    this.data = this.readFile(opts.defaults) || {}
+    this.dataFolder = path.join(this.rootFolder, 'data')
+    this.fullPath = path.join(this.dataFolder, `${props.filename}.json`)
+    this.data = this.readFile(props.defaults) || {}
   }
 
   readFile (defaults) {
@@ -19,6 +19,7 @@ class Store {
   }
 
   writeFile () {
+    if (!fs.existsSync(this.dataFolder)) fs.mkdirSync(this.dataFolder)
     return fs.writeFileSync(this.fullPath, JSON.stringify(this.data))
   }
 
