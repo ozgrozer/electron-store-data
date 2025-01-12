@@ -2,15 +2,18 @@
 [![npm](https://img.shields.io/npm/v/electron-store-data.svg?style=flat-square)](https://www.npmjs.com/package/electron-store-data)
 [![license](https://img.shields.io/badge/license-MIT-blue.svg?style=flat-square)](https://github.com/ozgrozer/electron-store-data/blob/master/license)
 
-A Node.js module to store [Electron](https://github.com/electron/electron) datas in the computer.
+A Node.js module to store [Electron](https://github.com/electron/electron) data in the computer.
 
 ## Installation
 ```sh
-# with npm
-$ npm i electron-store-data
+# npm
+npm i electron-store-data
 
-# or with yarn
-$ yarn add electron-store-data
+# pnpm
+pnpm add electron-store-data
+
+# yarn
+yarn add electron-store-data
 ```
 
 ## Usage
