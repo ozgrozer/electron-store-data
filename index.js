@@ -1,6 +1,6 @@
+const fs = require('fs')
 const path = require('path')
 const electron = require('electron')
-const fs = require('fs')
 
 class Store {
   constructor (props) {
@@ -24,17 +24,31 @@ class Store {
   }
 
   get (key) {
-    return this.data[key]
+    return key ? this.data[key] : this.data
   }
 
   set (key, val) {
-    this.data[key] = val
+    if (!key) {
+      this.data = val
+    } else {
+      this.data[key] = val
+    }
     return this.writeFile()
   }
 
   delete (key) {
-    delete this.data[key]
-    return this.writeFile()
+    if (!key) {
+      try {
+        fs.unlinkSync(this.fullPath)
+        this.data = {}
+        return true
+      } catch (e) {
+        return false
+      }
+    } else {
+      delete this.data[key]
+      return this.writeFile()
+    }
   }
 }
 
