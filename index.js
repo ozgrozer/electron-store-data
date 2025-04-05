@@ -1,12 +1,46 @@
 const fs = require('fs')
 const path = require('path')
+const crypto = require('crypto')
 const electron = require('electron')
 
+const encrypt = ({ text, encryptionKey }) => {
+  const iv = crypto.randomBytes(16)
+  const cipher = crypto.createCipheriv(algorithm, encryptionKey, iv)
+  let encrypted = cipher.update(text, 'utf8')
+  encrypted = Buffer.concat([encrypted, cipher.final()])
+  return iv.toString('hex') + ':' + encrypted.toString('hex')
+}
+
+const decrypt = ({ encryptedText, encryptionKey }) => {
+  try {
+    const [ivHex, dataHex] = encryptedText.split(':')
+    const iv = Buffer.from(ivHex, 'hex')
+    const encrypted = Buffer.from(dataHex, 'hex')
+
+    const decipher = crypto.createDecipheriv(algorithm, encryptionKey, iv)
+    let decrypted = decipher.update(encrypted)
+    decrypted = Buffer.concat([decrypted, decipher.final()])
+    return decrypted.toString('utf8')
+  } catch (err) {
+    console.log('Decryption failed:', err.message)
+    return null
+  }
+}
+
 class Store {
-  constructor ({ filename, defaults = {} }) {
+  constructor ({ filename, defaults = {}, encryption = {} }) {
     if (!filename) {
       throw new Error('No filename provided')
     }
+
+    if (encryption.enable) {
+      this.encryptionKey = crypto.scryptSync(
+        encryption.password,
+        encryption.salt,
+        64
+      )
+    }
+
     this.rootFolder = (electron.app || electron.remote.app).getPath('userData')
     this.dataFolder = path.join(this.rootFolder, 'data')
     this.fullPath = path.join(this.dataFolder, `${filename}.json`)
