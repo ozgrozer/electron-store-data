@@ -3,9 +3,7 @@ const path = require('path')
 const crypto = require('crypto')
 const electron = require('electron')
 
-const algorithm = 'aes-256-cbc'
-
-const encrypt = ({ text, encryptionKey }) => {
+const encrypt = ({ text, algorithm, encryptionKey }) => {
   const iv = crypto.randomBytes(16)
   const cipher = crypto.createCipheriv(algorithm, encryptionKey, iv)
   let encrypted = cipher.update(text, 'utf8')
@@ -13,7 +11,7 @@ const encrypt = ({ text, encryptionKey }) => {
   return iv.toString('hex') + ':' + encrypted.toString('hex')
 }
 
-const decrypt = ({ encryptedText, encryptionKey }) => {
+const decrypt = ({ algorithm, encryptedText, encryptionKey }) => {
   try {
     const [ivHex, dataHex] = encryptedText.split(':')
     const iv = Buffer.from(ivHex, 'hex')
@@ -36,10 +34,11 @@ class Store {
     }
 
     if (encryption.enable) {
+      this.algorithm = encryption.algorithm || 'aes-256-cbc'
       this.encryptionKey = crypto.scryptSync(
         encryption.password,
         encryption.salt,
-        64
+        encryption.keylen || 64
       )
     }
 
@@ -55,6 +54,7 @@ class Store {
 
       if (this.encryptionKey) {
         fileContent = decrypt({
+          algorithm: this.algorithm,
           encryptedText: fileContent,
           encryptionKey: this.encryptionKey
         })
@@ -78,6 +78,7 @@ class Store {
     if (this.encryptionKey) {
       dataToWrite = encrypt({
         text: dataToWrite,
+        algorithm: this.algorithm,
         encryptionKey: this.encryptionKey
       })
     }
