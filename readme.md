@@ -40,6 +40,25 @@ storeWindow.set('bounds', { x: 500, y: 200, width: 800, height: 450 })
 storeWindow.delete('bounds')
 ```
 
+## Encryption
+```js
+// initialize
+const storeSubscription = new Store({
+  filename: 'subscription',
+  encryption: {
+    enable: true,
+    salt: 'XXX',
+    password: 'XXX',
+    algorithm: '', // optional (default: aes-256-cbc)
+    keylen: '' // optional (default: 64)
+  },
+  defaults: {
+    plan: 'basic',
+    license: 'XXXX-XXXX-XXXX-XXXX'
+  }
+})
+```
+
 ## Contribution
 Feel free to contribute. Open a new [issue](https://github.com/ozgrozer/electron-store-data/issues), or make a [pull request](https://github.com/ozgrozer/electron-store-data/pulls).
 
