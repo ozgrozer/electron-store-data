@@ -38,7 +38,7 @@ class Store {
       this.encryptionKey = crypto.scryptSync(
         encryption.password,
         encryption.salt,
-        encryption.keylen || 64
+        encryption.keylen || 32
       )
     }
 

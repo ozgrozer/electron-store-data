@@ -49,8 +49,8 @@ const storeSubscription = new Store({
     enable: true,
     salt: 'XXX',
     password: 'XXX',
-    algorithm: '', // optional (default: aes-256-cbc)
-    keylen: '' // optional (default: 64)
+    keylen: '', // optional (default: 32)
+    algorithm: '' // optional (default: aes-256-cbc)
   },
   defaults: {
     plan: 'basic',
