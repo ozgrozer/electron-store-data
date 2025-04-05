@@ -3,6 +3,8 @@ const path = require('path')
 const crypto = require('crypto')
 const electron = require('electron')
 
+const algorithm = 'aes-256-cbc'
+
 const encrypt = ({ text, encryptionKey }) => {
   const iv = crypto.randomBytes(16)
   const cipher = crypto.createCipheriv(algorithm, encryptionKey, iv)
@@ -49,7 +51,20 @@ class Store {
 
   readFile (defaults) {
     try {
-      return JSON.parse(fs.readFileSync(this.fullPath, 'utf8'))
+      let fileContent = fs.readFileSync(this.fullPath, 'utf8')
+
+      if (this.encryptionKey) {
+        fileContent = decrypt({
+          encryptedText: fileContent,
+          encryptionKey: this.encryptionKey
+        })
+
+        if (fileContent === null) {
+          return defaults
+        }
+      }
+
+      return JSON.parse(fileContent)
     } catch (e) {
       return defaults
     }
@@ -57,7 +72,17 @@ class Store {
 
   writeFile () {
     if (!fs.existsSync(this.dataFolder)) fs.mkdirSync(this.dataFolder)
-    return fs.writeFileSync(this.fullPath, JSON.stringify(this.data))
+
+    let dataToWrite = JSON.stringify(this.data)
+
+    if (this.encryptionKey) {
+      dataToWrite = encrypt({
+        text: dataToWrite,
+        encryptionKey: this.encryptionKey
+      })
+    }
+
+    return fs.writeFileSync(this.fullPath, dataToWrite)
   }
 
   get (key) {
