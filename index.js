@@ -3,11 +3,14 @@ const path = require('path')
 const electron = require('electron')
 
 class Store {
-  constructor (props) {
+  constructor ({ filename, defaults = {} }) {
+    if (!filename) {
+      throw new Error('No filename provided')
+    }
     this.rootFolder = (electron.app || electron.remote.app).getPath('userData')
     this.dataFolder = path.join(this.rootFolder, 'data')
-    this.fullPath = path.join(this.dataFolder, `${props.filename}.json`)
-    this.data = this.readFile(props.defaults) || {}
+    this.fullPath = path.join(this.dataFolder, `${filename}.json`)
+    this.data = this.readFile(defaults) || {}
   }
 
   readFile (defaults) {
